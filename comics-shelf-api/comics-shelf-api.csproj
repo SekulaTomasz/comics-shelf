@@ -5,4 +5,13 @@
     <RootNamespace>comics_shelf_api</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\comics-shelf-api.core\comics-shelf-api.core.csproj" />
+  </ItemGroup>
+
 </Project>

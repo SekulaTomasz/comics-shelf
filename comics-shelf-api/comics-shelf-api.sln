@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "comics-shelf-api", "comics-shelf-api.csproj", "{6635E89B-C80A-43D4-B1F8-DC00A88B77AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "comics-shelf-api", "comics-shelf-api.csproj", "{6635E89B-C80A-43D4-B1F8-DC00A88B77AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "comics-shelf-api.core", "..\comics-shelf-api.core\comics-shelf-api.core.csproj", "{DCEA267E-CF11-45CF-803D-FE386398CAB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6635E89B-C80A-43D4-B1F8-DC00A88B77AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6635E89B-C80A-43D4-B1F8-DC00A88B77AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6635E89B-C80A-43D4-B1F8-DC00A88B77AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCEA267E-CF11-45CF-803D-FE386398CAB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCEA267E-CF11-45CF-803D-FE386398CAB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCEA267E-CF11-45CF-803D-FE386398CAB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCEA267E-CF11-45CF-803D-FE386398CAB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
