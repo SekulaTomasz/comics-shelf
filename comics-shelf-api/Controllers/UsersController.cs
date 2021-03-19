@@ -12,5 +12,10 @@ namespace comics_shelf_api.Controllers
     public class UsersController : ControllerBase
     {
         public UsersController() { }
+
+        [HttpGet("index")]
+        public async Task<IActionResult> GetAsync() {
+            return Ok("Ok");
+        }
     }
 }
