@@ -40,8 +40,16 @@ namespace comics_shelf_api
         {
             var connectionString = Configuration.GetValue<string>("ConnectionString");
             services.AddControllers();
-            services.AddDbContext<DatabaseContext>(options => 
-                options.UseSqlServer(connectionString));
+            services.AddMvc();
+            services.AddDbContext<DatabaseContext>(options => {
+                options.UseSqlServer(connectionString);
+            });
+            // Add services to the collection. Don't build or return
+            // any IServiceProvider or the ConfigureContainer method
+            // won't get called. Don't create a ContainerBuilder
+            // for Autofac here, and don't call builder.Populate() - that
+            // happens in the AutofacServiceProviderFactory for you.
+            services.AddOptions();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

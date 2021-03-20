@@ -46,7 +46,7 @@ namespace comics_shelf_api.core.Database
 				.Where(x => x.Entity is Entity && (x.State == EntityState.Added || x.State == EntityState.Modified));
 
 			var entityEntries = modifiedEntries as IList<EntityEntry> ?? modifiedEntries.ToList();
-
+			var random = new Random();
 			foreach (var entry in entityEntries)
 			{
 				var entity = (Entity)entry.Entity;
@@ -54,14 +54,20 @@ namespace comics_shelf_api.core.Database
 
 				if (entry.State == EntityState.Added)
 				{
+					if (entity.GetType() == typeof(User))
+					{
+						((User)entity).Coins = random.Next(1, 100);
+					}
+
 					entity.Id = Guid.NewGuid();
 					entity.CreatedAt = now;
 				}
 				if (entry.State == EntityState.Modified)
 				{
-					entity.UpdatedAd = now;
+					entity.UpdatedAt = now;
 				}
 
+				
 			}
 		}
 	}

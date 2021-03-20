@@ -8,6 +8,6 @@ namespace comics_shelf_api.core.Models
     {
         public Guid Id { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAd { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

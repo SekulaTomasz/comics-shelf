@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using comics_shelf_api.core.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,24 @@ namespace comics_shelf_api.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        public UsersController() { }
+        private readonly IUserService _userService;
+        public UsersController(IUserService userService) {
+            this._userService = userService;
+        }
 
         [HttpGet("index")]
         public async Task<IActionResult> GetAsync() {
             return Ok("Ok");
+        }
+
+        [HttpGet()]
+        public async Task<IActionResult> GetUserByIdAsync([FromQuery]Guid userId) {
+            var result = await _userService.FindUserByIdAsync(userId);
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
     }
 }

@@ -8,5 +8,6 @@ namespace comics_shelf_api.core.Models
     {
         public string Login { get; set; }
         public string Password { get; set; }
+        public int Coins { get; set; }
     }
 }
