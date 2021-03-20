@@ -14,6 +14,9 @@ using Microsoft.EntityFrameworkCore;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using comics_shelf_api.core.IoC;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using comics_shelf_api.core.ExternalProviders;
 
 namespace comics_shelf_api
 {
@@ -39,11 +42,22 @@ namespace comics_shelf_api
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration.GetValue<string>("ConnectionString");
-            services.AddControllers();
-            services.AddMvc();
+            services
+                .AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize;
+                    options.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+                })
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.SuppressModelStateInvalidFilter = true;
+                });
             services.AddDbContext<DatabaseContext>(options => {
                 options.UseSqlServer(connectionString);
             });
+            services.AddHttpClient<ComicsProvider>();
             // Add services to the collection. Don't build or return
             // any IServiceProvider or the ConfigureContainer method
             // won't get called. Don't create a ContainerBuilder

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using comics_shelf_api.core.ExternalProviders;
 using comics_shelf_api.core.Services;
 using comics_shelf_api.core.Services.Interfaces;
 using System;
@@ -13,6 +14,8 @@ namespace comics_shelf_api.core.IoC
         {
             base.Load(builder);
             builder.RegisterType<UserService>().As<IUserService>();
+            builder.RegisterType<PurchaseComicsService>().As<IPurchaseComicsService>();
+            builder.RegisterType<PasswordHasher>().As<IPasswordHasher>();
         }
     }
 }

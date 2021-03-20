@@ -1,4 +1,5 @@
-﻿using comics_shelf_api.core.Services.Interfaces;
+﻿using comics_shelf_api.core.Dtos;
+using comics_shelf_api.core.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,15 +18,43 @@ namespace comics_shelf_api.Controllers
             this._userService = userService;
         }
 
-        [HttpGet("index")]
-        public async Task<IActionResult> GetAsync() {
-            return Ok("Ok");
-        }
-
-        [HttpGet()]
+        [HttpGet("getById")]
         public async Task<IActionResult> GetUserByIdAsync([FromQuery]Guid userId) {
             var result = await _userService.FindUserByIdAsync(userId);
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getByLogin")]
+        public async Task<IActionResult> GetUserByLogin([FromQuery] string userName)
+        {
+            var result = await _userService.FindUserByLoginAsync(userName);
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody]UserLoginDto userDto)
+        {
+            var result = await _userService.LoginUserAsync(userDto);
+            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.Created)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] UserLoginDto userDto)
+        {
+            var result = await _userService.RegisterUserAsync(userDto);
+            if (result.StatusCode == System.Net.HttpStatusCode.OK || result.StatusCode == System.Net.HttpStatusCode.Created)
             {
                 return Ok(result);
             }

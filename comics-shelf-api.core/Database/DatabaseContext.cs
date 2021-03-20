@@ -14,7 +14,9 @@ namespace comics_shelf_api.core.Database
     {
         public DatabaseContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<User> Users{ get; set; }
+        public DbSet<User> Users { get; set; }
+		public DbSet<PurchasedComicsUsers> PurchasedComicsUsers { get; set; }
+		public DbSet<Comics> Comics { get; set; }
 
 		public override int SaveChanges()
 		{
@@ -59,7 +61,7 @@ namespace comics_shelf_api.core.Database
 						((User)entity).Coins = random.Next(1, 100);
 					}
 
-					entity.Id = Guid.NewGuid();
+					entity.Id = entity.Id == null ? Guid.NewGuid() : entity.Id;
 					entity.CreatedAt = now;
 				}
 				if (entry.State == EntityState.Modified)

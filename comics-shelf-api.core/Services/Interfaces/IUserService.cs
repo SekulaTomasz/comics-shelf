@@ -9,6 +9,9 @@ namespace comics_shelf_api.core.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<ApiResult<User>> FindUserByIdAsync(Guid id);
+        Task<ApiResult<UserDto>> FindUserByIdAsync(Guid id);
+        Task<ApiResult<UserDto>> FindUserByLoginAsync(string login);
+        Task<ApiResult<UserDto>> RegisterUserAsync(UserLoginDto user);
+        Task<ApiResult<UserDto>> LoginUserAsync(UserLoginDto user);
     }
 }
