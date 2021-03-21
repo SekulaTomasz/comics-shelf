@@ -6,6 +6,6 @@ export interface IComics extends IEntity {
         title: string;
         price: string;
         creators: string;
-        releaseDate: Date;
+        release_date: Date;
         diamondId: string;
 }

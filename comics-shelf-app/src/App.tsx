@@ -17,6 +17,7 @@ function App() {
 
   return (
     <StyledAppContainer>
+      {/* <HomePage /> */}
         {user ? <HomePage /> : <LoginPage />}
     </StyledAppContainer>
   );
