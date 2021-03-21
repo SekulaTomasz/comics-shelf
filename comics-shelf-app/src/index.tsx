@@ -2,11 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { QueryClient, QueryClientProvider } from "react-query";
+import { UserProvider } from './contexts/UserContext';
+import { AlertProvider } from './contexts/AlertContext';
+import { SpinnerProvider } from './contexts/SpinnerContext';
+
+const queryClient = new QueryClient();
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <AlertProvider>
+        <SpinnerProvider>
+          <UserProvider>
+            <App />
+          </UserProvider>
+        </SpinnerProvider>
+      </AlertProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
@@ -14,4 +27,3 @@ ReactDOM.render(
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
