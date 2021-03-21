@@ -2,10 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { QueryClient, QueryClientProvider } from "react-query";
+import { UserProvider } from './contexts/UserContext';
+import { AlertProvider } from './contexts/AlertContext';
+import { SpinnerProvider } from './contexts/SpinnerContext';
+
+const queryClient = new QueryClient();
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <AlertProvider>
+        <SpinnerProvider>
+          <UserProvider>
+            <App />
+          </UserProvider>
+        </SpinnerProvider>
+      </AlertProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
