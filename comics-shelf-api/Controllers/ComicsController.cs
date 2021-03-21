@@ -1,4 +1,5 @@
 ﻿using comics_shelf_api.core.Services.Interfaces;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,6 +11,7 @@ namespace comics_shelf_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("CorsPolicy")]
     public class ComicsController : ControllerBase
     {
         private readonly IComicsService _comicsService;

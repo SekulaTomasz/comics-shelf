@@ -57,12 +57,27 @@ namespace comics_shelf_api
             services.AddDbContext<DatabaseContext>(options => {
                 options.UseSqlServer(connectionString);
             });
+
+            // Add framework services.
+            
             services.AddHttpClient<ComicsProvider>();
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy",
+                    builder =>
+                    {
+                        builder.
+                            WithOrigins("*").
+                            AllowAnyHeader().
+                            AllowAnyMethod();
+                    });
+            });
             // Add services to the collection. Don't build or return
             // any IServiceProvider or the ConfigureContainer method
             // won't get called. Don't create a ContainerBuilder
             // for Autofac here, and don't call builder.Populate() - that
             // happens in the AutofacServiceProviderFactory for you.
+            services.AddMvc();
             services.AddOptions();
         }
 
@@ -93,11 +108,10 @@ namespace comics_shelf_api
             app.UseRouting();
 
             app.UseAuthorization();
-
-            app.UseCors(
-                options => options.WithOrigins("*").AllowAnyMethod()
-            );
-
+            app.UseCors(builder => builder
+                 .AllowAnyOrigin()
+                 .AllowAnyMethod()
+                 .AllowAnyHeader());
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

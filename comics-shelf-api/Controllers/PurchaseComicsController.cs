@@ -1,5 +1,6 @@
 ﻿using comics_shelf_api.core.Dtos;
 using comics_shelf_api.core.Services.Interfaces;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,6 +12,7 @@ namespace comics_shelf_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("CorsPolicy")]
     public class PurchaseComicsController : ControllerBase
     {
 
