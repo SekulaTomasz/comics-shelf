@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace comics_shelf_api.Controllers
@@ -32,16 +34,16 @@ namespace comics_shelf_api.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("user/comics")]
-        public async Task<IActionResult> GetUserComicsAsync([FromQuery] Guid userId)
+        [HttpGet("download")]
+        public async Task<FileStreamResult> Download()
         {
-            var result = await _purchaseComicsService.GetUserComicsAsync(userId);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
+            var path = Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "Static/Zadanie rekrutacyjne na stanowisko Fullstack.pdf");
+            FileStream uploadFileStream = System.IO.File.OpenRead(path);
+            return File(uploadFileStream, "application/octet-stream");
         }
+
 
         [HttpPost("purchase")]
         public async Task<IActionResult> PurchaseComicsAsync([FromBody] PurchaseComicsDto purchaseComicsDto)

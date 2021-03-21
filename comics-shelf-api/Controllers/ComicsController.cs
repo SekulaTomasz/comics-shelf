@@ -15,10 +15,12 @@ namespace comics_shelf_api.Controllers
     public class ComicsController : ControllerBase
     {
         private readonly IComicsService _comicsService;
+        private readonly IPurchaseComicsService _purchaseComicsService;
 
-        public ComicsController(IComicsService comicsService)
+        public ComicsController(IComicsService comicsService, IPurchaseComicsService purchaseComicsService)
         {
             this._comicsService = comicsService;
+            this._purchaseComicsService = purchaseComicsService;
         }
 
         [HttpGet("avaliable")]
@@ -35,6 +37,17 @@ namespace comics_shelf_api.Controllers
         [HttpGet("byTitle")]
         public async Task<IActionResult> GetComicsByTitle([FromQuery] string title) {
             var result = await _comicsService.GetComicsByTitle(title);
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetUserComicsAsync([FromQuery] Guid userId)
+        {
+            var result = await _purchaseComicsService.GetUserComicsAsync(userId);
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return Ok(result);

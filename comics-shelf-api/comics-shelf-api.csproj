@@ -17,4 +17,10 @@
     <ProjectReference Include="..\comics-shelf-api.core\comics-shelf-api.core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Static\Zadanie rekrutacyjne na stanowisko Fullstack.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
