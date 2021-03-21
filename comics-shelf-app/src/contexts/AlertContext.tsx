@@ -1,30 +1,51 @@
 
-import React, { createContext, FunctionComponent, useState } from 'react';
+import React, { createContext, FunctionComponent, useEffect, useState } from 'react';
 import Alert, { Color } from '@material-ui/lab/Alert';
 
 interface IAlertContext {
+    toggleAlert: Function;
+    alertProps: IAlertProps;
+}
+
+export interface IAlertProps {
+    message: string;
     severity: string;
     isVisible: boolean;
-    toggleAlert: Function;
-    message: string;
 }
 
 const context = {
-    isVisible: false,
-    severity: "error",
-    message: "",
+    alertProps: {
+        isVisible: false,
+        severity: "error",
+        message: ""
+    },
     toggleAlert: () => { }
 } as IAlertContext;
 
 export const AlertContext = createContext<IAlertContext>(context);
 
+let timeout: any = null;
 
 export const AlertProvider: FunctionComponent = ({ children }) => {
 
-    const [toastContext, toggleToastr] = useState<IAlertContext>(context);
+    const [toastContext, toggleAlertState] = useState<IAlertProps>(context.alertProps);
 
-    return <AlertContext.Provider value={{ ...toastContext, toggleAlert: toggleToastr }}>
-        {toastContext.isVisible && (<Alert variant="outlined" severity={toastContext.severity as Color}>
+    const toggleAlert = (alertProps: IAlertProps) => toggleAlertState(alertProps);
+
+    useEffect(() => {
+        if(!toastContext.isVisible) {
+            clearTimeout(timeout);
+            return;
+        };
+        timeout = setTimeout(timeoutHandler, 5000)
+    },[toastContext]);
+
+    const timeoutHandler = () => toggleAlert({...toastContext, isVisible: false,} as IAlertProps)
+
+    
+
+    return <AlertContext.Provider value={{ alertProps:toastContext, toggleAlert: toggleAlert }}>
+        {toastContext.isVisible && (<Alert variant="outlined" severity={toastContext.severity as Color} style={{margin: '1rem'}}>
             {toastContext.message}
         </Alert>)}
         {children}

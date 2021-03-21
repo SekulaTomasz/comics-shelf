@@ -19,7 +19,11 @@ export const UserProvider: FunctionComponent = ({ children }) => {
 
     const [context, setContext] = useState<IUserContext>({} as IUserContext);
 
-    return <UserContext.Provider value={{...context, setContext:setContext}}>
+    const onUserChangeHandler = (user: IUser) =>{
+        setContext({...context, user: user});
+    } 
+
+    return <UserContext.Provider value={{...context, setContext: onUserChangeHandler}}>
         {children}
     </UserContext.Provider>
 }
