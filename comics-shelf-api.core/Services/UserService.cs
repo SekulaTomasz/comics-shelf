@@ -26,6 +26,11 @@ namespace comics_shelf_api.core.Services
             ApiResult<UserDto> apiResult = new ApiResult<UserDto>();
             try {
                 var result = await _userRepository.FindUserByIdAsync(id);
+                if (result == null)
+                {
+                    throw new Exception(String.Format(UserServiceError.USER_NOT_FOUND, id));
+
+                }
                 apiResult.Result = new UserDto()
                 {
                     Coins = result.Coins,

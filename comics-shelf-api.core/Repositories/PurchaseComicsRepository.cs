@@ -38,22 +38,9 @@ namespace comics_shelf_api.core.Repositories
             return await _context.PurchasedComicsUsers.Where(x => x.User.Id == userId).Select(x => x.Comics).ToListAsync();
         }
 
-        public async Task<PurchasedComicsUsers> PurchaseComicsAsync(Guid userId, ExternalProviderComicsDto externalProviderComicsDto, bool asExclusive = false)
+        public async Task<PurchasedComicsUsers> PurchaseComicsAsync(User user, Comics comics, bool asExclusive = false)
         {
             _context.Database.BeginTransaction();
-            var user = await _context.Users.FindAsync(userId);
-            var comics = new Comics()
-            {
-                Id = Guid.NewGuid(),
-                Creators = externalProviderComicsDto.Creators,
-                Description = externalProviderComicsDto.Description,
-                DiamondId = externalProviderComicsDto.DiamondId,
-                Price = externalProviderComicsDto.Price,
-                Publisher = externalProviderComicsDto.Publisher,
-                ReleaseDate = externalProviderComicsDto.ReleaseDate,
-                Title = externalProviderComicsDto.Title
-            };
-            _context.Comics.Add(comics);
             var purchaseComics = new PurchasedComicsUsers()
             {
                 Id = Guid.NewGuid(),
@@ -64,9 +51,6 @@ namespace comics_shelf_api.core.Repositories
                 PurchaseDate = DateTime.UtcNow
             };
             _context.PurchasedComicsUsers.Add(purchaseComics);
-            
-            user.Coins -= purchaseComics.Cost;
-            _context.Users.Update(user);
             await _context.SaveChangesAsync();
             _context.Database.CommitTransaction();
             var savedResult = await _context.PurchasedComicsUsers.FindAsync(purchaseComics.Id);
@@ -75,11 +59,8 @@ namespace comics_shelf_api.core.Repositories
 
         public async Task ReturnComicsAsync(PurchasedComicsUsers comics)
         {
-            var user = await  _context.Users.FindAsync(comics.User.Id);
             _context.Database.BeginTransaction();
             _context.PurchasedComicsUsers.Remove(comics);
-            user.Coins += comics.Cost;
-            _context.Users.Update(user);
             await _context.SaveChangesAsync();
             _context.Database.CommitTransaction();
             

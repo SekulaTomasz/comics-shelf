@@ -19,14 +19,6 @@ namespace comics_shelf_api.Controllers
         public PurchaseComicsController(IPurchaseComicsService purchaseComicsService) {
             this._purchaseComicsService = purchaseComicsService;
         }
-        [HttpGet("avaliable")]
-        public async Task<IActionResult> GetAvailableComics([FromQuery] int currentPage = 1) {
-            var result = await _purchaseComicsService.GetAvailableComicsAsync(currentPage);
-            if (result.StatusCode == System.Net.HttpStatusCode.OK) {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
 
         [HttpGet("canUserDownload")]
         public async Task<IActionResult> CanUserDownloadFileAsync([FromQuery] Guid userId, Guid comicsId) {

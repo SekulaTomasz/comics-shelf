@@ -12,7 +12,7 @@ namespace comics_shelf_api.core.Repositories.Interfaces
 
         Task<List<string>> GetComicsPurchasedAsExclusiveAsync();
         Task<List<Comics>> GetUserComicsAsync(Guid userId);
-        Task<PurchasedComicsUsers> PurchaseComicsAsync(Guid userId, ExternalProviderComicsDto externalProviderComicsDto, bool asExclusive = false);
+        Task<PurchasedComicsUsers> PurchaseComicsAsync(User user, Comics comics, bool asExclusive = false);
         Task ReturnComicsAsync(PurchasedComicsUsers comics);
         Task<PurchasedComicsUsers> GetPurchasedComicsByUserAsync(Guid userId, Guid comicsId);
 

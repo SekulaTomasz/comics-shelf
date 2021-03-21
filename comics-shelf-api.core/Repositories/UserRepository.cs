@@ -40,5 +40,12 @@ namespace comics_shelf_api.core.Repositories
             return await _context.Users.FirstOrDefaultAsync(x => x.Login == login);
         }
 
+        public async Task UpdateUser(User user)
+        {
+            _context.Database.BeginTransaction();
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            _context.Database.CommitTransaction();
+        }
     }
 }

@@ -15,10 +15,13 @@ namespace comics_shelf_api.core.Services
     public class PurchaseComicsService : IPurchaseComicsService
     {
         private readonly IPurchaseComicsRepository _purchaseComicsRepository;
-        private readonly IComicsProvider _comicsProvider;
-        public PurchaseComicsService(IPurchaseComicsRepository purchaseComicsRepository, IComicsProvider comicsProvider) {
+        private readonly IUserRepository _userRepository;
+        private readonly IComicsRepository _comicsRepository;
+        public PurchaseComicsService(IPurchaseComicsRepository purchaseComicsRepository,
+            IUserRepository userRepository, IComicsRepository comicsRepository) {
             this._purchaseComicsRepository = purchaseComicsRepository;
-            this._comicsProvider = comicsProvider;
+            this._userRepository = userRepository;
+            this._comicsRepository = comicsRepository;
         }
         public async Task<ApiResult<FileDto>> CanUserDownloadFileAsync(Guid userId, Guid comicsId)
         {
@@ -59,28 +62,6 @@ namespace comics_shelf_api.core.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ApiResult<PagedResult<ExternalProviderComicsDto>>> GetAvailableComicsAsync(int currentPage)
-        {
-            try {
-                var result = await _comicsProvider.GetComicsFromProvider();
-                var filtered = await this.GetComicsWitoutExclusiveAsync(result);
-                var paged = PagedResult<ExternalProviderComicsDto>.Create(filtered.AsQueryable(), currentPage, 10, "ReleaseDate", Enums.OrderBy.Desc);
-                return new ApiResult<PagedResult<ExternalProviderComicsDto>>()
-                {
-                    Result = paged,
-                    StatusCode = System.Net.HttpStatusCode.OK
-                };
-            }
-            catch (Exception ex) { 
-                return new ApiResult<PagedResult<ExternalProviderComicsDto>>()
-                {
-                    StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Error = ex.Message
-                };
-            }
-            
-        }
-
         public async Task<ApiResult<List<Comics>>> GetUserComicsAsync(Guid userId)
         {
             try
@@ -100,7 +81,7 @@ namespace comics_shelf_api.core.Services
             }
         }
 
-        public async Task<ApiResult<PurchasedComicsUsers>> PurchaseComicsAsync(Guid userId, ExternalProviderComicsDto externalProviderComicsDto)
+        public async Task<ApiResult<PurchasedComicsUsers>> PurchaseComicsAsync(Guid userId, ExternalProviderComicsDto externalProviderComicsDto, bool asExclusive = false)
         {
             try
             {
@@ -108,7 +89,26 @@ namespace comics_shelf_api.core.Services
                 if (currentUserIsOwnerOfComics) {
                     throw new Exception(String.Format(PurchaseComicsServiceError.USER_HAVE_COMICS, externalProviderComicsDto.DiamondId));
                 }
-                    var result = await _purchaseComicsRepository.PurchaseComicsAsync(userId, externalProviderComicsDto);
+                var user = await _userRepository.FindUserByIdAsync(userId);
+                if (user == null) throw new Exception(String.Format(UserServiceError.USER_NOT_FOUND, userId));
+                var comics = await _comicsRepository.GetComicsByExternalApiId(externalProviderComicsDto.DiamondId);
+                if(comics == null)
+                {
+                    var toCreate = new Comics() { 
+                        Id = Guid.NewGuid(),
+                        Creators = externalProviderComicsDto.Creators,
+                        Description = externalProviderComicsDto.Description,
+                        DiamondId = externalProviderComicsDto.DiamondId,
+                        Price = externalProviderComicsDto.Price,
+                        Publisher = externalProviderComicsDto.Publisher,
+                        ReleaseDate = externalProviderComicsDto.ReleaseDate,
+                        Title = externalProviderComicsDto.Title
+                    };
+                    comics = await _comicsRepository.CreateNewComics(toCreate);
+                }
+                var result = await _purchaseComicsRepository.PurchaseComicsAsync(user, comics, asExclusive);
+                user.Coins -= result.Cost;
+                await _userRepository.UpdateUser(user);
                 return new ApiResult<PurchasedComicsUsers>()
                 {
                     Result = result,
@@ -128,11 +128,18 @@ namespace comics_shelf_api.core.Services
         {
             try
             {
+                var user = await _userRepository.FindUserByIdAsync(userId);
+                if (user == null) throw new Exception(String.Format(UserServiceError.USER_NOT_FOUND, userId));
                 var purcharsedComics = await _purchaseComicsRepository.GetPurchasedComicsByUserAsync(userId, comics);
                 if (purcharsedComics == null) {
                     throw new Exception(String.Format(PurchaseComicsServiceError.CANNOT_FIND_PURCHASED_COMICS_WITH_ID, comics));
                 }
+
+                if (!CheckIfComicsWasBoughtLessThanOneWeek(purcharsedComics)) throw new Exception(PurchaseComicsServiceError.CANNOT_RETURN_COMICS_WAS_BOUGHT_MORE_THAN_ONE_WEEK);
+
                 await _purchaseComicsRepository.ReturnComicsAsync(purcharsedComics);
+                user.Coins += purcharsedComics.Cost;
+                await _userRepository.UpdateUser(user);
                 return new ApiResult<object>()
                 {
                     StatusCode = System.Net.HttpStatusCode.OK
@@ -147,15 +154,18 @@ namespace comics_shelf_api.core.Services
             }
         }
 
-        private async Task<List<ExternalProviderComicsDto>> GetComicsWitoutExclusiveAsync(List<ExternalProviderComicsDto> comics) {
-            var exclusives = await _purchaseComicsRepository.GetComicsPurchasedAsExclusiveAsync();
-            if (!exclusives.Any()) return comics;
-            return comics.Where(x => !exclusives.Any(y => y == x.DiamondId)).ToList();
+        private async Task<bool> CurrentUserHaveSpecificComics(Guid userId, string diamondId) {
+            var result = await _purchaseComicsRepository.GetPurchasedComicsByUserAsync(userId, diamondId);
+            return result != null;
         }
 
-        private async Task<bool> CurrentUserHaveSpecificComics(Guid userId,string diamondId) {
-            var result = await _purchaseComicsRepository.GetPurchasedComicsByUserAsync(userId, diamondId);
-            return result != null ? true : false;
+        private bool CheckIfComicsWasBoughtLessThanOneWeek(PurchasedComicsUsers purchasedComics) {
+            var currentDate = DateTime.UtcNow;
+
+            if (purchasedComics.PurchaseDate < currentDate.AddDays(-7)) {
+                return false;
+            }
+            return true;
         }
     }
 }

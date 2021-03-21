@@ -11,5 +11,6 @@ namespace comics_shelf_api.core.Repositories.Interfaces
         Task<User> FindUserByIdAsync(Guid id);
         Task<User> FindUserByLoginAsync(string login);
         Task<User> CreateUser(string login, string password);
+        Task UpdateUser(User user);
     }
 }

@@ -10,5 +10,6 @@ namespace comics_shelf_api.core.Dtos
         [JsonProperty(PropertyName = "comics")]
         public ExternalProviderComicsDto ExternalProviderComicsDto { get; set; }
         public Guid UserId { get; set; }
+        public bool asExclusive { get; set; }
     }
 }

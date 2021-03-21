@@ -35,7 +35,7 @@ namespace comics_shelf_api.test
             }
         }
         [TestMethod]
-        public async Task Should_Return_Response_With_StatusCode_200_And_Empty_Result()
+        public async Task Should_Return_Response_With_StatusCode_400_And_Empty_Result()
         {
             var userId = Guid.NewGuid();
             var userId2 = Guid.NewGuid();
@@ -53,7 +53,7 @@ namespace comics_shelf_api.test
                 var actual = await sut.FindUserByIdAsync(userId2);
 
                 // Assert - assert on the mock
-                Assert.AreEqual(HttpStatusCode.OK, actual.StatusCode);
+                Assert.AreEqual(HttpStatusCode.BadRequest, actual.StatusCode);
                 Assert.IsNull(actual.Result);
             }
         }

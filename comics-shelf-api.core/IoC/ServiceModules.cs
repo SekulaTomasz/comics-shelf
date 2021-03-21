@@ -15,6 +15,7 @@ namespace comics_shelf_api.core.IoC
             base.Load(builder);
             builder.RegisterType<UserService>().As<IUserService>();
             builder.RegisterType<PurchaseComicsService>().As<IPurchaseComicsService>();
+            builder.RegisterType<ComicsService>().As<IComicsService>();
             builder.RegisterType<PasswordHasher>().As<IPasswordHasher>();
         }
     }

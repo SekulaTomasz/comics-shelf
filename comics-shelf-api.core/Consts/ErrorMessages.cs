@@ -22,5 +22,13 @@ namespace comics_shelf_api.core.Consts
     public static class PurchaseComicsServiceError {
         public const string CANNOT_FIND_PURCHASED_COMICS_WITH_ID = "Can not found comics with id {0}";
         public const string USER_HAVE_COMICS = "User have comics with id {0}";
+        public const string CANNOT_RETURN_COMICS_WAS_BOUGHT_MORE_THAN_ONE_WEEK = "Can not return comics becouse was bougth more than one week";
+    }
+    public static class UserServiceError {
+        public const string USER_NOT_FOUND = "Can not found user with id {0}";
+    }
+
+    public static class ComicsServiceErrror {
+        public const string COMICS_NOT_FOUND = "Can not found comics with id {0}";
     }
 }

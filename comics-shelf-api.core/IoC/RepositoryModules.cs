@@ -14,6 +14,7 @@ namespace comics_shelf_api.core.IoC
             base.Load(builder);
             builder.RegisterType<UserRepository>().As<IUserRepository>();
             builder.RegisterType<PurchaseComicsRepository>().As<IPurchaseComicsRepository>();
+            builder.RegisterType<ComicsRepository>().As<IComicsRepository>();
         }
     }
 }
