@@ -4,6 +4,7 @@ import React from 'react'
 import TabPanel from '../components/TabPanel/TabPanel';
 import ComicsList from '../components/ComicsList/ComicsList';
 import { ComicsListType } from '../enums/ComicsListType';
+import SearchInput from '../components/Search/SearchInput';
 
 const HomePage = () => {
 
@@ -15,6 +16,8 @@ const HomePage = () => {
 
 
     return (
+        <>
+        <SearchInput />
             <AppBar position="static">
                 <Tabs value={value} onChange={handleChange} indicatorColor="primary"
           variant="fullWidth">
@@ -23,6 +26,7 @@ const HomePage = () => {
                 </Tabs>
                 <TabPanel value={value}/>
             </AppBar>
+        </>
     )
 }
 

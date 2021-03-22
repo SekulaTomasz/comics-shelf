@@ -27,6 +27,7 @@ interface IComicsDetailsProps {
 const ComicsDetails: FunctionComponent<IComicsDetailsProps> = (props) => {
 
     const { toggleAlert } = useAlert();
+    
     let linkRef = React.useRef<any>();
 
     if(!props.comics || !props.currentUser) return <></>;

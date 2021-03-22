@@ -64,7 +64,7 @@ namespace comics_shelf_api.core.Services
             try
             {
                 var filtered = await GetFilteredComics();
-                var founded = filtered.Where(x => x.Title.Contains(title)).ToList();
+                var founded = filtered.Where(x => x.Title.Contains(title)).Take(5).ToList();
                 return new ApiResult<List<ExternalProviderComicsDto>>() {
                     StatusCode = System.Net.HttpStatusCode.OK,
                     Result = founded
